@@ -1,4 +1,6 @@
-
+import java.awt.Graphics;
+import javax.swing.ImageIcon;
+import java.awt.Image;
 
 /**
  * Write a description of class Ship here.
@@ -8,33 +10,30 @@
  */
 public class Ship
 {
-    /** description of instance variable x (add comment for each instance variable) */
-    private int x;
-
-    /**
-     * Default constructor for objects of class Ship
-     */
-    public Ship()
+    private int x; //top left x coor
+    private int y; //top left y coor
+    
+    public Ship(int x, int y)
     {
-        // initialise instance variables
-        x = 0;
+        this.x = x;
+        this.y = y;
     }
-
-    /**
-     * An example of a method - replace this comment with your own
-     *    that describes the operation of the method
-     *
-     * @pre        preconditions for the method
-     *            (what the method assumes about the method's parameters and class's state)
-     * @post    postconditions for the method
-     *            (what the method guarantees upon completion)
-     * @param    y    description of parameter y
-     * @return    description of the return value
-     */
-    public int sampleMethod(int y)
+    
+    public void draw(Graphics g)
     {
-        // put your code here
-        return x+y;
+        ImageIcon icon = new ImageIcon("ship.png");
+        Image image = icon.getImage();
+        
+        g.drawImage(image, x, y, null);
     }
-
+    
+    public void moveLeft()
+    {
+        this.x -= 5;
+    }
+    
+    public void moveRight()
+    {
+        this.x += 5;
+    }
 }

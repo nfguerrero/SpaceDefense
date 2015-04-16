@@ -1,0 +1,14 @@
+#BlueJ class context
+comment0.params=
+comment0.target=GameComponent()
+comment1.params=g
+comment1.target=void\ paintComponent(java.awt.Graphics)
+comment2.params=
+comment2.target=void\ startMoveLeft()
+comment3.params=
+comment3.target=void\ stopMoveLeft()
+comment4.params=
+comment4.target=void\ startMoveRight()
+comment5.params=
+comment5.target=void\ stopMoveRight()
+numComments=6
