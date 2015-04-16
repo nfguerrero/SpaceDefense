@@ -38,7 +38,7 @@ public class GameFrame extends JFrame
       public void keyTyped(KeyEvent event) {}
       public void keyReleased(KeyEvent event)
       {
-          String key = KeyStroke.getKeyStrokeForEvent(event).toString().replace("pressed ", "");
+          String key = KeyStroke.getKeyStrokeForEvent(event).toString().replace("released ", "");
           
           if (key.equals("LEFT"))
           {
@@ -46,7 +46,7 @@ public class GameFrame extends JFrame
           }
           else if (key.equals("RIGHT"))
           {
-              scene.stopMoveLeft();
+              scene.stopMoveRight();
           }
           
           if (key.equals("ESC"))

@@ -1,6 +1,9 @@
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import javax.swing.JComponent;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import javax.swing.Timer;
 
 /**
  * TEMP DESCRIPTION:  does everything
@@ -8,7 +11,7 @@ import javax.swing.JComponent;
  * @author nfguerrero 
  * @version Ver: 1.0
  */
-public class GameComponent extends JComponent
+public class GameComponent extends JComponent implements ActionListener
 {
     //frame width:  784
     //frame height: 562
@@ -25,6 +28,8 @@ public class GameComponent extends JComponent
     
     private boolean pause = false;
     
+    private Timer timer = new Timer(17, this);
+    
     public GameComponent()
     {
         ship = new Ship(375, 528);
@@ -35,7 +40,22 @@ public class GameComponent extends JComponent
     {
         this.ship.draw(g);
         
+        timer.start();
+        
         requestFocusInWindow();
+    }
+    
+    public void actionPerformed(ActionEvent event)
+    {
+        if (this.left)
+        {
+            ship.moveLeft();
+        }
+        if (this.right)
+        {
+            ship.moveRight();
+        }
+        repaint();
     }
     
     public void startMoveLeft()
@@ -50,11 +70,11 @@ public class GameComponent extends JComponent
    
     public void startMoveRight()
     {
-        ship.moveRight();
-        this.repaint();
+        this.right = true;
     }
     
     public void stopMoveRight()
     {
+        this.right = false;
     }
 }

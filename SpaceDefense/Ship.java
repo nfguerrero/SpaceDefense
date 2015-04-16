@@ -12,6 +12,7 @@ public class Ship
 {
     private int x; //top left x coor
     private int y; //top left y coor
+    private int move = 10;
     
     public Ship(int x, int y)
     {
@@ -29,11 +30,11 @@ public class Ship
     
     public void moveLeft()
     {
-        this.x -= 5;
+        this.x -= this.move;
     }
     
     public void moveRight()
     {
-        this.x += 5;
+        this.x += this.move;
     }
 }
