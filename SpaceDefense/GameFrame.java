@@ -15,8 +15,10 @@ import javax.swing.KeyStroke;
  */
 public class GameFrame extends JFrame
 {
-   private static final int FRAME_WIDTH = 800;// inside width: 784
-   private static final int FRAME_HEIGHT = 600;// inside height: 562
+   private static final int FRAME_WIDTH = 800;// inside width: 794
+   private static final int FRAME_HEIGHT = 600;// inside height: 572
+   
+   private boolean paused = false;
 
    private GameComponent scene;
    
@@ -26,13 +28,27 @@ public class GameFrame extends JFrame
       {
          String key = KeyStroke.getKeyStrokeForEvent(event).toString().replace("pressed ", ""); 
 
-         if (key.equals("LEFT"))
+         if (key.equals("LEFT") && !paused)
          {
             scene.startMoveLeft();            
          }
-         else if (key.equals("RIGHT"))
+         else if (key.equals("RIGHT") && !paused)
          {
             scene.startMoveRight();            
+         }
+         
+         if (key.equals("ESCAPE"))
+         {
+            if (!paused)
+            {
+                paused = true;
+                scene.pause();
+            }
+            else
+            {
+                paused = false;
+                scene.unpause();
+            }
          }
       }
       public void keyTyped(KeyEvent event) {}
@@ -48,11 +64,6 @@ public class GameFrame extends JFrame
           {
               scene.stopMoveRight();
           }
-          
-          if (key.equals("ESC"))
-          {
-              System.out.print("yes");
-          }
       }
    }
          
@@ -61,6 +72,7 @@ public class GameFrame extends JFrame
        public void windowOpened(WindowEvent event)
        {
            scene.requestFocusInWindow();
+           scene.setVariables();
        }
    }
    
@@ -73,9 +85,9 @@ public class GameFrame extends JFrame
       this.addWindowListener(new frameWindowListener());
       
       this.setSize(FRAME_WIDTH, FRAME_HEIGHT);
-      //this.setResizable(false);
       this.setTitle("Character Testing");      
       this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+      this.setResizable(false);
       this.setVisible(true);  
    }
 } 

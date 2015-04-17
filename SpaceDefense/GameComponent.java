@@ -4,6 +4,7 @@ import javax.swing.JComponent;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.Timer;
+import java.awt.Image;
 
 /**
  * TEMP DESCRIPTION:  does everything
@@ -13,11 +14,10 @@ import javax.swing.Timer;
  */
 public class GameComponent extends JComponent implements ActionListener
 {
-    //frame width:  784
-    //frame height: 562
     //ship width: 34
     //ship height: 34
-    //ship reset coors: (x, y) = (375, 528)
+    private int width;
+    private int height;
     private int x = 0;
     private int y = 0;
     
@@ -27,35 +27,78 @@ public class GameComponent extends JComponent implements ActionListener
     private boolean right = false;
     
     private boolean pause = false;
+    private PauseMenu menu;
     
-    private Timer timer = new Timer(17, this);
+    private Timer timer = new Timer(2, this);
+    
+    private Image bufferImage;
+    private Graphics bufferGraphics;
     
     public GameComponent()
     {
-        ship = new Ship(375, 528);
+        this.ship = new Ship(0 ,0);
+        this.menu = new PauseMenu(0, 0);
         this.setFocusable(true);
+    }
+    
+    public void setVariables()
+    {
+        this.width = this.getWidth();
+        this.height = this.getHeight();
+        
+        this.ship = new Ship(this.width/2, this.height-34);
+        this.menu = new PauseMenu(this.getWidth(), 0);
     }
     
     public void paintComponent(Graphics g)
     {
         this.ship.draw(g);
-        
+        this.menu.draw(g);
         timer.start();
+    }
+    
+    public void update(Graphics g)
+    {
+        if (bufferImage == null)
+        {
+            bufferImage = createImage(this.getSize().width, this.getSize().height);
+            bufferGraphics = bufferImage.getGraphics();
+        }
         
-        requestFocusInWindow();
+        paint(bufferGraphics);
+        
+        g.drawImage(bufferImage, 0, 0, this);
     }
     
     public void actionPerformed(ActionEvent event)
     {
         if (this.left)
         {
+            if (ship.getX() <= 0)
+            {
+                ship.setX(this.width-34);
+            }
             ship.moveLeft();
         }
         if (this.right)
         {
+            if (ship.getX() + 34 >= this.width)
+            {
+                ship.setX(0);
+            }
             ship.moveRight();
         }
         repaint();
+    }
+    
+    public void pause()
+    {
+        this.menu.setX(0);
+    }
+    
+    public void unpause()
+    {
+        this.menu.setX(this.width);
     }
     
     public void startMoveLeft()
@@ -77,4 +120,6 @@ public class GameComponent extends JComponent implements ActionListener
     {
         this.right = false;
     }
+    
+    
 }
