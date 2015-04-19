@@ -8,48 +8,29 @@ import java.awt.Image;
  * @author (your name) 
  * @version (a version number or a date)
  */
-public class Enemy
+public class Background
 {
     private int x; //top left x coor
     private int y; //top left y coor
-    private int dx; //x vector
-    private int dy; //y vector
     
-    public Enemy(int x, int y)
+    public Background(int x, int y)
     {
         this.x = x;
         this.y = y;
-        this.dx = (int) (Math.random()*2 + 1);
-        this.dy = 1;
     }
     
     public void draw(Graphics g)
     {
-        ImageIcon icon = new ImageIcon("Images\\enemy.png");
+        ImageIcon icon = new ImageIcon("Images\\background.png");
         Image image = icon.getImage();
         
         g.drawImage(image, x, y, null);
     }
     
-    public void move()
-    {
-        this.x += dx;
-        this.y += dy;
-    }
-    
-    public int getX()
-    {
-        return this.x;
-    }
-    
     public void setX(int x)
     {
         this.x = x;
-    }
-    
-    public int getY()
-    {
-        return this.y;
+        
     }
     
     public void setY(int y)

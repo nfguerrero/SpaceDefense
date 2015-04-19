@@ -8,24 +8,22 @@ import java.awt.Image;
  * @author (your name) 
  * @version (a version number or a date)
  */
-public class Enemy
+public class Missle
 {
     private int x; //top left x coor
     private int y; //top left y coor
-    private int dx; //x vector
     private int dy; //y vector
     
-    public Enemy(int x, int y)
+    public Missle(int x, int y)
     {
         this.x = x;
         this.y = y;
-        this.dx = (int) (Math.random()*2 + 1);
-        this.dy = 1;
+        this.dy = -2;
     }
     
     public void draw(Graphics g)
     {
-        ImageIcon icon = new ImageIcon("Images\\enemy.png");
+        ImageIcon icon = new ImageIcon("Images\\missile_double.png");
         Image image = icon.getImage();
         
         g.drawImage(image, x, y, null);
@@ -33,7 +31,6 @@ public class Enemy
     
     public void move()
     {
-        this.x += dx;
         this.y += dy;
     }
     

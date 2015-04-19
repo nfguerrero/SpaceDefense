@@ -28,13 +28,18 @@ public class GameFrame extends JFrame
       {
          String key = KeyStroke.getKeyStrokeForEvent(event).toString().replace("pressed ", ""); 
 
-         if (key.equals("LEFT") && !paused)
+         if (key.equals("LEFT"))
          {
             scene.startMoveLeft();            
          }
-         else if (key.equals("RIGHT") && !paused)
+         else if (key.equals("RIGHT"))
          {
             scene.startMoveRight();            
+         }
+         
+         if (key.equals("SPACE"))
+         {
+             scene.startShooting();
          }
          
          if (key.equals("ESCAPE"))
@@ -64,6 +69,11 @@ public class GameFrame extends JFrame
           {
               scene.stopMoveRight();
           }
+          
+          if (key.equals("SPACE"))
+          {
+              scene.stopShooting();
+          }
       }
    }
          
@@ -85,7 +95,7 @@ public class GameFrame extends JFrame
       this.addWindowListener(new frameWindowListener());
       
       this.setSize(FRAME_WIDTH, FRAME_HEIGHT);
-      this.setTitle("Character Testing");      
+      this.setTitle("Space Invaders");      
       this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
       this.setResizable(false);
       this.setVisible(true);  

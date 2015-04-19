@@ -12,7 +12,7 @@ public class Ship
 {
     private int x; //top left x coor
     private int y; //top left y coor
-    private int move = 2;
+    private int move = 5;
     
     public Ship(int x, int y)
     {
