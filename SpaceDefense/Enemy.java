@@ -19,7 +19,12 @@ public class Enemy
     {
         this.x = x;
         this.y = y;
-        this.dx = (int) (Math.random()*2 + 1);
+        int sign = (int) (Math.random()*2);
+        if (sign == 0)
+        {
+            sign = -1;
+        }
+        this.dx = sign * (int) (Math.random()*2 + 1);
         this.dy = 1;
     }
     

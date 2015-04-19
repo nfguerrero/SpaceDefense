@@ -41,8 +41,8 @@ public class GameComponent extends JComponent implements ActionListener
     
     private Timer timer = new Timer(10, this);
     
-    private Image bufferImage;
-    private Graphics bufferGraphics;
+    //private Image bufferImage;
+    //private Graphics bufferGraphics;
     
     public GameComponent()
     {
@@ -117,6 +117,24 @@ public class GameComponent extends JComponent implements ActionListener
                 missleDelay = 0;
             }
             
+            for (int i = 0; i < this.enemies.size(); i++)
+            {
+                Enemy enemy = this.enemies.get(i);
+                
+                if (enemy.getX() <= 0)
+                {
+                    enemy.setX(this.width-58);
+                } 
+                else if (enemy.getX() + 58 >= this.width) 
+                {
+                    enemy.setX(0);
+                }
+                if (enemy.getY() + 29 >= this.height)
+                {
+                    enemy.setY(0);
+                }
+                enemy.move();
+            }
             for (int i = 0; i < this.missles.size(); i++)
             {
                 Missle missle = this.missles.get(i);                 
@@ -125,34 +143,20 @@ public class GameComponent extends JComponent implements ActionListener
                 for (int j = 0; j < this.enemies.size(); j++)
                 {
                     Enemy enemy = this.enemies.get(j);
-                    if (enemy.getX() <= 0)
+
+                    if (missle.getX() >= enemy.getX() && missle.getX() <= enemy.getX() + 58 ||
+                        missle.getX() + 26 >= enemy.getX() && missle.getX() + 26 <= enemy.getX() + 58)
                     {
-                        enemy.setX(this.width-58);
-                    } 
-                    else if (enemy.getX() + 58 >= this.width) 
-                    {
-                        enemy.setX(0);
+                        if (missle.getY() >= enemy.getY() && missle.getY() <= enemy.getY() + 29 ||
+                            missle.getY() + 12 >= enemy.getY() && missle.getY() + 12 <= enemy.getY() + 29)
+                        {
+                            this.enemies.remove(j);
+                            this.missles.remove(i);                            
+                        }
                     }
-                    if (enemy.getY() + 29 >= this.height)
-                    {
-                        enemy.setY(0);
-                    }
-                    enemy.move();
-                    
-//                     if (missle.getX() >= enemy.getX() && missle.getX() <= enemy.getX() + 58 ||
-//                         missle.getX() + 26 >= enemy.getX() && missle.getX() + 26 <= enemy.getX() + 58)
-//                     {
-//                         if (missle.getY() >= enemy.getY() && missle.getY() <= enemy.getY() + 29 ||
-//                             missle.getY() + 12 >= enemy.getY() && missle.getY() + 12 <= enemy.getY() + 29)
-//                         {
-//                             this.enemies.remove(i);
-//                             this.missles.remove(i);
-//                         }
-//                     }
                 }
             }
-            missleDelay++;
-            
+            missleDelay++;            
         }
         repaint();
     }
