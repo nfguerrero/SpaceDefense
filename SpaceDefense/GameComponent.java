@@ -15,12 +15,13 @@ import java.util.ArrayList;
  */
 public class GameComponent extends JComponent implements ActionListener
 {
-    //ship width: 34
-    //ship height: 34
     private int width;
     private int height;
     private int x = 0;
     private int y = 0;
+    
+    private boolean gameOver = false;
+    private int lvl = 1;
     
     private Background background;
     
@@ -48,9 +49,8 @@ public class GameComponent extends JComponent implements ActionListener
     {
         this.background = new Background(0, 0);
         this.ship = new Ship(380 ,538);
-        this.enemies.add(new Enemy(368, 0));
-        this.menu = new PauseMenu(794, 0);
-        
+        this.level(this.enemies, this.lvl);
+        this.menu = new PauseMenu(0, 0);
         this.setFocusable(true);
     }
     
@@ -65,7 +65,10 @@ public class GameComponent extends JComponent implements ActionListener
     public void paintComponent(Graphics g)
     {
         this.background.draw(g);
-        this.ship.draw(g);
+        if (!this.gameOver)
+        {
+            this.ship.draw(g);
+        }
         for (int i = 0; i < this.enemies.size(); i++)
         {
             this.enemies.get(i).draw(g);
@@ -74,7 +77,10 @@ public class GameComponent extends JComponent implements ActionListener
         {
             this.missles.get(i).draw(g);
         }
-        this.menu.draw(g);
+        if (this.pause && !this.gameOver)
+        {
+            this.menu.draw(g);
+        }
         timer.start();
     }
     
@@ -95,7 +101,7 @@ public class GameComponent extends JComponent implements ActionListener
     {
         if (!this.pause)
         {
-            if (this.left)
+            if (this.left && !this.gameOver)
             {
                 if (ship.getX() <= 0)
                 {
@@ -103,7 +109,7 @@ public class GameComponent extends JComponent implements ActionListener
                 }
                 ship.moveLeft();
             }
-            if (this.right)
+            if (this.right && !this.gameOver)
             {
                 if (ship.getX() + 34 >= this.width)
                 {
@@ -111,7 +117,7 @@ public class GameComponent extends JComponent implements ActionListener
                 }
                 ship.moveRight();
             }            
-            if (this.shooting && missleDelay >= 30)
+            if (this.shooting && missleDelay >= 30 && !this.gameOver)
             {
                 missles.add(new Missle(ship.getX()+4, ship.getY()-12));
                 missleDelay = 0;
@@ -134,12 +140,24 @@ public class GameComponent extends JComponent implements ActionListener
                     enemy.setY(0);
                 }
                 enemy.move();
+                
+                if (enemy.getX() >= this.ship.getX() && enemy.getX() <= this.ship.getX() + 34 ||
+                    enemy.getX() + 58 >= this.ship.getX() && enemy.getX() + 58 <= this.ship.getX() + 34)
+                {
+                    if (enemy.getY() >= this.ship.getY() && enemy.getY() <= this.ship.getY() + 34 ||
+                        enemy.getY() + 29 >= this.ship.getY() && enemy.getY() + 29 <= this.ship.getY() + 34)
+                    {
+                        this.gameOver = true;
+                    }
+                }
             }
+            boolean[] misslesLeft = new boolean[this.missles.size()];
             for (int i = 0; i < this.missles.size(); i++)
             {
                 Missle missle = this.missles.get(i);                 
                 missle.move();
                 
+                misslesLeft[i] = true;
                 for (int j = 0; j < this.enemies.size(); j++)
                 {
                     Enemy enemy = this.enemies.get(j);
@@ -151,26 +169,51 @@ public class GameComponent extends JComponent implements ActionListener
                             missle.getY() + 12 >= enemy.getY() && missle.getY() + 12 <= enemy.getY() + 29)
                         {
                             this.enemies.remove(j);
-                            this.missles.remove(i);                            
+                            if (misslesLeft[i])
+                            {
+                                this.missles.remove(i);
+                                misslesLeft[i] = false;
+                            }                     
                         }
                     }
                 }
             }
-            missleDelay++;            
+            missleDelay++;        
+            
+            if (this.enemies.size() == 0)
+            {
+                this.lvl++;
+                this.level(this.enemies, this.lvl);
+            }
         }
         repaint();
     }
     
+    private void level(ArrayList<Enemy> enemies, int lvl)
+    {
+        for (int i = 0; i < lvl*5; i++)
+        {
+            int x = (int) (Math.random()*736);
+            enemies.add(new Enemy(x, 0));
+        }
+    }
+    
     public void pause()
     {
-        this.pause = true;
-        this.menu.setX(0);
+        if (!this.gameOver)
+        {
+            this.pause = true;
+        }
     }
     
     public void unpause()
     {
         this.pause = false;
-        this.menu.setX(this.width);
+    }
+    
+    public boolean getPause()
+    {
+        return this.pause;
     }
     
     public void startMoveLeft()

@@ -17,8 +17,6 @@ public class GameFrame extends JFrame
 {
    private static final int FRAME_WIDTH = 800;// inside width: 794
    private static final int FRAME_HEIGHT = 600;// inside height: 572
-   
-   private boolean paused = false;
 
    private GameComponent scene;
    
@@ -44,14 +42,12 @@ public class GameFrame extends JFrame
          
          if (key.equals("ESCAPE"))
          {
-            if (!paused)
+            if (!scene.getPause())
             {
-                paused = true;
                 scene.pause();
             }
             else
             {
-                paused = false;
                 scene.unpause();
             }
          }
