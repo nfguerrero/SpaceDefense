@@ -20,7 +20,12 @@ public class GameComponent extends JComponent implements ActionListener
     private int x = 0;
     private int y = 0;
     
+    private boolean mainMenu = true;
+    private MainMenu menu = new MainMenu(0, 0);
+    
     private boolean gameOver = false;
+    private GameOver endMenu = new GameOver(0, 0);
+    
     private int lvl = 1;
     
     private Background background;
@@ -38,7 +43,11 @@ public class GameComponent extends JComponent implements ActionListener
     int missleDelay = 0;
     
     private boolean pause = false;
-    private PauseMenu menu;
+    private PauseMenu pauseMenu;
+    private MainMenuButton mainMenuButton;
+    private boolean mainMenuShadow = false;
+    private PlayGameButton playGameButton;
+    private boolean playGameShadow = false;
     
     private Timer timer = new Timer(10, this);
     
@@ -50,7 +59,7 @@ public class GameComponent extends JComponent implements ActionListener
         this.background = new Background(0, 0);
         this.ship = new Ship(380 ,538);
         this.level(this.enemies, this.lvl);
-        this.menu = new PauseMenu(0, 0);
+        this.pauseMenu = new PauseMenu(0, 0);
         this.setFocusable(true);
     }
     
@@ -65,7 +74,7 @@ public class GameComponent extends JComponent implements ActionListener
     public void paintComponent(Graphics g)
     {
         this.background.draw(g);
-        if (!this.gameOver)
+        if (!this.gameOver && !this.mainMenu)
         {
             this.ship.draw(g);
         }
@@ -77,9 +86,29 @@ public class GameComponent extends JComponent implements ActionListener
         {
             this.missles.get(i).draw(g);
         }
-        if (this.pause && !this.gameOver)
+        if (this.pause && !this.gameOver && !this.mainMenu)
+        {
+            this.pauseMenu.draw(g);
+            
+            this.mainMenuButton = new MainMenuButton(322, 261);
+            this.mainMenuButton.setShadow(this.mainMenuShadow);
+            this.mainMenuButton.draw(g);
+        }
+        if (this.gameOver)
+        {
+            this.endMenu.draw(g);
+            
+            this.mainMenuButton = new MainMenuButton(322, 261);
+            this.mainMenuButton.setShadow(this.mainMenuShadow);
+            this.mainMenuButton.draw(g);
+        }
+        if (this.mainMenu)
         {
             this.menu.draw(g);
+            
+            this.playGameButton = new PlayGameButton(322, 261);
+            this.playGameButton.setShadow(this.playGameShadow);
+            this.playGameButton.draw(g);
         }
         timer.start();
     }
@@ -101,7 +130,7 @@ public class GameComponent extends JComponent implements ActionListener
     {
         if (!this.pause)
         {
-            if (this.left && !this.gameOver)
+            if (this.left && !this.gameOver && !this.mainMenu)
             {
                 if (ship.getX() <= 0)
                 {
@@ -109,7 +138,7 @@ public class GameComponent extends JComponent implements ActionListener
                 }
                 ship.moveLeft();
             }
-            if (this.right && !this.gameOver)
+            if (this.right && !this.gameOver && !this.mainMenu)
             {
                 if (ship.getX() + 34 >= this.width)
                 {
@@ -117,7 +146,7 @@ public class GameComponent extends JComponent implements ActionListener
                 }
                 ship.moveRight();
             }            
-            if (this.shooting && missleDelay >= 30 && !this.gameOver)
+            if (this.shooting && missleDelay >= 30 && !this.gameOver && !this.mainMenu)
             {
                 missles.add(new Missle(ship.getX()+4, ship.getY()-12));
                 missleDelay = 0;
@@ -141,13 +170,16 @@ public class GameComponent extends JComponent implements ActionListener
                 }
                 enemy.move();
                 
-                if (enemy.getX() >= this.ship.getX() && enemy.getX() <= this.ship.getX() + 34 ||
-                    enemy.getX() + 58 >= this.ship.getX() && enemy.getX() + 58 <= this.ship.getX() + 34)
+                if (!this.mainMenu)
                 {
-                    if (enemy.getY() >= this.ship.getY() && enemy.getY() <= this.ship.getY() + 34 ||
-                        enemy.getY() + 29 >= this.ship.getY() && enemy.getY() + 29 <= this.ship.getY() + 34)
+                    if (enemy.getX() >= this.ship.getX() && enemy.getX() <= this.ship.getX() + 34 ||
+                        enemy.getX() + 58 >= this.ship.getX() && enemy.getX() + 58 <= this.ship.getX() + 34)
                     {
-                        this.gameOver = true;
+                        if (enemy.getY() >= this.ship.getY() && enemy.getY() <= this.ship.getY() + 34 ||
+                            enemy.getY() + 29 >= this.ship.getY() && enemy.getY() + 29 <= this.ship.getY() + 34)
+                        {
+                            this.gameOver = true;
+                        }
                     }
                 }
             }
@@ -216,6 +248,17 @@ public class GameComponent extends JComponent implements ActionListener
         return this.pause;
     }
     
+    public void setShadow(boolean shadow)
+    {
+        this.mainMenuShadow = shadow;
+        this.playGameShadow = shadow;
+    }
+    
+    public boolean getShadow()
+    {
+        return this.mainMenuShadow;
+    }
+    
     public void startMoveLeft()
     {
         this.left = true;
@@ -244,5 +287,37 @@ public class GameComponent extends JComponent implements ActionListener
     public void stopShooting()
     {
         this.shooting = false;
+    }
+    
+    public void play(boolean menu)
+    {
+        this.mainMenu = !menu;
+    }
+    
+    public boolean getMenu()
+    {
+        return this.mainMenu;
+    }
+    
+    public boolean getGameOver()
+    {
+        return this.gameOver;
+    }
+    
+    public void resetGameOver()
+    {
+        this.gameOver = false;
+    }
+    
+    public void reset()
+    {
+        int size = this.enemies.size();
+        for (int i = 0; i < size; i++)
+        {
+            enemies.remove(0);
+        }
+        this.lvl = 0;
+        this.ship.setX(380);
+        this.ship.setY(538);
     }
 }

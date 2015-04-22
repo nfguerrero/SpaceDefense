@@ -7,6 +7,10 @@ import java.awt.event.KeyListener;
 import java.awt.event.KeyEvent;
 import javax.swing.KeyStroke;
 
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseMotionAdapter;
+import java.awt.event.MouseEvent;
+
 /**
  * Frame for the game that holds the Listeners and tells the component what to do
  * 
@@ -42,13 +46,16 @@ public class GameFrame extends JFrame
          
          if (key.equals("ESCAPE"))
          {
-            if (!scene.getPause())
+            if (!scene.getGameOver() && !scene.getMenu())
             {
-                scene.pause();
-            }
-            else
-            {
-                scene.unpause();
+                if (!scene.getPause())
+                {
+                    scene.pause();
+                }
+                else
+                {
+                    scene.unpause();
+                }
             }
          }
       }
@@ -72,8 +79,65 @@ public class GameFrame extends JFrame
           }
       }
    }
-         
-   class frameWindowListener extends WindowAdapter
+   
+   private boolean inRange;
+   class MouseMovementListener extends MouseMotionAdapter
+   {       
+       public void mouseMoved(MouseEvent event)
+       {
+           int x = event.getX();
+           int y = event.getY();
+           if (scene.getPause() || scene.getMenu() || scene.getGameOver())
+           {
+               if (x >= 322 && x <= 472 && y >= 261 && y <= 311)
+               {
+                   if (!scene.getShadow())
+                   {
+                       scene.setShadow(true);                       
+                   }
+                   inRange = true;
+               }
+               else
+               {
+                   if (scene.getShadow())
+                   {
+                       scene.setShadow(false);
+                   }
+                   inRange = false;
+               }
+           }
+       }
+   }
+   class MouseClickListener extends MouseAdapter
+   {
+       public void mouseClicked(MouseEvent event)
+       {
+           if (inRange)
+           {
+               if (scene.getMenu())
+               {
+                   scene.reset();
+                   scene.play(true);
+                   scene.setShadow(false);
+               }
+               else if (scene.getPause())
+               {
+                   scene.play(false);
+                   scene.unpause();
+                   scene.setShadow(false);
+               }
+               else if (scene.getGameOver())
+               {
+                   scene.play(false);
+                   scene.unpause();
+                   scene.setShadow(false);
+                   scene.resetGameOver();
+               }
+           }
+       }
+   }
+   
+   class FrameWindowListener extends WindowAdapter
    {
        public void windowOpened(WindowEvent event)
        {
@@ -88,7 +152,9 @@ public class GameFrame extends JFrame
       this.add(scene);
 
       scene.addKeyListener(new KeyStrokeListener());
-      this.addWindowListener(new frameWindowListener());
+      this.addWindowListener(new FrameWindowListener());
+      scene.addMouseListener(new MouseClickListener());
+      scene.addMouseMotionListener(new MouseMovementListener());
       
       this.setSize(FRAME_WIDTH, FRAME_HEIGHT);
       this.setTitle("Space Invaders");      
