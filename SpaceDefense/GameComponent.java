@@ -1,3 +1,4 @@
+
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import javax.swing.JComponent;
@@ -7,7 +8,7 @@ import javax.swing.Timer;
 import java.awt.Image;
 import java.util.ArrayList;
 
-/**
+/**i
  * TEMP DESCRIPTION:  does everything
  * 
  * @author nfguerrero 
@@ -19,6 +20,9 @@ public class GameComponent extends JComponent implements ActionListener
     private int height;
     private int x = 0;
     private int y = 0;
+    
+    private int balance = 0;
+    private int score = 0;
     
     private boolean mainMenu = true;
     private MainMenu menu = new MainMenu(0, 0);
