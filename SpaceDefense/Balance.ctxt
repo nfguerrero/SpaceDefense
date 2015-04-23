@@ -1,0 +1,12 @@
+#BlueJ class context
+comment0.params=x\ y\ score
+comment0.target=Balance(int,\ int,\ int)
+comment1.params=g
+comment1.target=void\ draw(java.awt.Graphics)
+comment2.params=score
+comment2.target=void\ setScore(int)
+comment3.params=x
+comment3.target=void\ setX(int)
+comment4.params=y
+comment4.target=void\ setY(int)
+numComments=5

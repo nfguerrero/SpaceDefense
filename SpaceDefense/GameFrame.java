@@ -11,6 +11,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseEvent;
 
+import java.util.ArrayList;
+
 /**
  * Frame for the game that holds the Listeners and tells the component what to do
  * 
@@ -81,27 +83,36 @@ public class GameFrame extends JFrame
    }
    
    private boolean inRange;
+   private Button buttonInRange;
    class MouseMovementListener extends MouseMotionAdapter
    {       
        public void mouseMoved(MouseEvent event)
        {
            int x = event.getX();
            int y = event.getY();
-           if (scene.getPause() || scene.getMenu() || scene.getGameOver())
+           ArrayList<Button> buttons = scene.getButtons();
+           
+           for (int i = 0; i < buttons.size(); i++)
            {
-               if (x >= 322 && x <= 472 && y >= 261 && y <= 311)
+               Button button = buttons.get(i);
+               int buttonX = button.getX();
+               int buttonY = button.getY();               
+               
+               if (x >= buttonX && x <= buttonX+150 && y >= buttonY && y <= buttonY+50)
                {
-                   if (!scene.getShadow())
+                   if (!button.getShadow())
                    {
-                       scene.setShadow(true);                       
+                       button.setShadow(true);
                    }
                    inRange = true;
+                   buttonInRange = button;
+                   i = buttons.size();
                }
                else
                {
-                   if (scene.getShadow())
+                   if (button.getShadow())
                    {
-                       scene.setShadow(false);
+                       button.setShadow(false);
                    }
                    inRange = false;
                }
@@ -118,20 +129,19 @@ public class GameFrame extends JFrame
                {
                    scene.reset();
                    scene.play(true);
-                   scene.setShadow(false);
+                   buttonInRange.setShadow(false);
                }
                else if (scene.getPause())
                {
                    scene.play(false);
                    scene.unpause();
-                   scene.setShadow(false);
+                   buttonInRange.setShadow(false);
                }
                else if (scene.getGameOver())
                {
                    scene.play(false);
-                   scene.unpause();
-                   scene.setShadow(false);
                    scene.resetGameOver();
+                   buttonInRange.setShadow(false);                   
                }
            }
        }

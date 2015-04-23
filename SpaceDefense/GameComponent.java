@@ -22,7 +22,9 @@ public class GameComponent extends JComponent implements ActionListener
     private int y = 0;
     
     private int balance = 0;
+    private Balance balanceGraphics = new Balance(0, 572, 0);
     private int score = 0;
+    private Score scoreGraphics = new Score(794, 0, 0);
     
     private boolean mainMenu = true;
     private MainMenu menu = new MainMenu(0, 0);
@@ -48,10 +50,12 @@ public class GameComponent extends JComponent implements ActionListener
     
     private boolean pause = false;
     private PauseMenu pauseMenu;
-    private MainMenuButton mainMenuButton;
-    private boolean mainMenuShadow = false;
-    private PlayGameButton playGameButton;
-    private boolean playGameShadow = false;
+    private Button mainMenuButton = new Button(322, 261, "main_menu");
+    private Button playGameButton = new Button(322, 261, "play_game");
+    private Button controlsButton = new Button(123, 379, "controls");
+    private Button upgradeButton = new Button(520, 379, "upgrade");
+    
+    private ArrayList<Button> buttons = new ArrayList<Button>(0);
     
     private Timer timer = new Timer(10, this);
     
@@ -81,6 +85,7 @@ public class GameComponent extends JComponent implements ActionListener
         if (!this.gameOver && !this.mainMenu)
         {
             this.ship.draw(g);
+            this.scoreGraphics.draw(g);
         }
         for (int i = 0; i < this.enemies.size(); i++)
         {
@@ -93,26 +98,33 @@ public class GameComponent extends JComponent implements ActionListener
         if (this.pause && !this.gameOver && !this.mainMenu)
         {
             this.pauseMenu.draw(g);
+            this.scoreGraphics.draw(g);
+            this.balanceGraphics.draw(g);
             
-            this.mainMenuButton = new MainMenuButton(322, 261);
-            this.mainMenuButton.setShadow(this.mainMenuShadow);
+            this.buttons.add(this.mainMenuButton);
             this.mainMenuButton.draw(g);
         }
         if (this.gameOver)
         {
             this.endMenu.draw(g);
+            this.scoreGraphics.draw(g);
+            this.balanceGraphics.draw(g);
             
-            this.mainMenuButton = new MainMenuButton(322, 261);
-            this.mainMenuButton.setShadow(this.mainMenuShadow);
-            this.mainMenuButton.draw(g);
+            this.buttons.add(this.mainMenuButton);
+            this.mainMenuButton.draw(g);            
         }
         if (this.mainMenu)
         {
             this.menu.draw(g);
+            this.scoreGraphics.draw(g);
+            this.balanceGraphics.draw(g);
             
-            this.playGameButton = new PlayGameButton(322, 261);
-            this.playGameButton.setShadow(this.playGameShadow);
+            this.buttons.add(this.playGameButton);
+            this.buttons.add(this.controlsButton);
+            this.buttons.add(this.upgradeButton);
             this.playGameButton.draw(g);
+            this.controlsButton.draw(g);
+            this.upgradeButton.draw(g);
         }
         timer.start();
     }
@@ -205,6 +217,10 @@ public class GameComponent extends JComponent implements ActionListener
                             missle.getY() + 12 >= enemy.getY() && missle.getY() + 12 <= enemy.getY() + 29)
                         {
                             this.enemies.remove(j);
+                            this.score += 1;
+                            this.balance += 1;
+                            this.scoreGraphics.setScore(this.score);
+                            this.balanceGraphics.setScore(this.balance);
                             if (misslesLeft[i])
                             {
                                 this.missles.remove(i);
@@ -221,6 +237,10 @@ public class GameComponent extends JComponent implements ActionListener
                 this.lvl++;
                 this.level(this.enemies, this.lvl);
             }
+        }
+        for (int i = this.buttons.size()-1; i >= 0; i--)
+        {
+            this.buttons.remove(i);
         }
         repaint();
     }
@@ -252,15 +272,9 @@ public class GameComponent extends JComponent implements ActionListener
         return this.pause;
     }
     
-    public void setShadow(boolean shadow)
+    public ArrayList<Button> getButtons()
     {
-        this.mainMenuShadow = shadow;
-        this.playGameShadow = shadow;
-    }
-    
-    public boolean getShadow()
-    {
-        return this.mainMenuShadow;
+        return this.buttons;
     }
     
     public void startMoveLeft()
@@ -321,6 +335,8 @@ public class GameComponent extends JComponent implements ActionListener
             enemies.remove(0);
         }
         this.lvl = 0;
+        this.score = 0;
+        this.scoreGraphics.setScore(0);
         this.ship.setX(380);
         this.ship.setY(538);
     }
