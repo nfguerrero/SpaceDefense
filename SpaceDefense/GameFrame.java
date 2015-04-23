@@ -127,9 +127,12 @@ public class GameFrame extends JFrame
            {
                if (scene.getMenu())
                {
-                   scene.reset();
-                   scene.play(true);
-                   buttonInRange.setShadow(false);
+                   if (buttonInRange.getButton().equals("play_game"))
+                   {
+                       scene.reset();
+                       scene.play(true);
+                       buttonInRange.setShadow(false);
+                    }
                }
                else if (scene.getPause())
                {
