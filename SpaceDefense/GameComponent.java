@@ -21,16 +21,27 @@ public class GameComponent extends JComponent implements ActionListener
     private int x = 0;
     private int y = 0;
     
+    private boolean play = false;
+    
     private int balance = 0;
     private Balance balanceGraphics = new Balance(0, 572, 0);
     private int score = 0;
     private Score scoreGraphics = new Score(794, 0, 0);
     
     private boolean mainMenu = true;
-    private MainMenu menu = new MainMenu(0, 0);
+    private Menu menu = new Menu(0, 0, "main_menu");
+    
+    private boolean pause = false;
+    private Menu pauseMenu = new Menu(0, 0, "pause_menu");
     
     private boolean gameOver = false;
-    private GameOver endMenu = new GameOver(0, 0);
+    private Menu endMenu = new Menu(0, 0, "game_over");
+    
+    private boolean controls = false;
+    private Menu controlsMenu = new Menu(0, 0, "controls");
+    
+    private boolean upgrade = false;
+    private Menu upgradeMenu = new Menu(0, 0, "upgrade");
     
     private int lvl = 1;
     
@@ -38,22 +49,20 @@ public class GameComponent extends JComponent implements ActionListener
     
     private Ship ship;
     
-    private ArrayList<Enemy> enemies = new ArrayList<Enemy>();
-    
+    private ArrayList<Enemy> enemies = new ArrayList<Enemy>();    
     
     private boolean left = false;
     private boolean right = false;
     
     private boolean shooting = false;
     private ArrayList<Missle> missles = new ArrayList<Missle>();
-    int missleDelay = 0;
+    int missleDelay = 0;       
     
-    private boolean pause = false;
-    private PauseMenu pauseMenu;
     private Button mainMenuButton = new Button(322, 261, "main_menu");
     private Button playGameButton = new Button(322, 261, "play_game");
     private Button controlsButton = new Button(123, 379, "controls");
     private Button upgradeButton = new Button(520, 379, "upgrade");
+    private Button backButton = new Button(0, 0, "back");
     
     private ArrayList<Button> buttons = new ArrayList<Button>(0);
     
@@ -65,9 +74,8 @@ public class GameComponent extends JComponent implements ActionListener
     public GameComponent()
     {
         this.background = new Background(0, 0);
-        this.ship = new Ship(380 ,538);
+        this.ship = new Ship(380 ,538, "ship1");
         this.level(this.enemies, this.lvl);
-        this.pauseMenu = new PauseMenu(0, 0);
         this.setFocusable(true);
     }
     
@@ -82,7 +90,7 @@ public class GameComponent extends JComponent implements ActionListener
     public void paintComponent(Graphics g)
     {
         this.background.draw(g);
-        if (!this.gameOver && !this.mainMenu)
+        if (this.play || this.pause)
         {
             this.ship.draw(g);
             this.scoreGraphics.draw(g);
@@ -95,7 +103,7 @@ public class GameComponent extends JComponent implements ActionListener
         {
             this.missles.get(i).draw(g);
         }
-        if (this.pause && !this.gameOver && !this.mainMenu)
+        if (this.pause && this.play)
         {
             this.pauseMenu.draw(g);
             this.scoreGraphics.draw(g);
@@ -126,6 +134,21 @@ public class GameComponent extends JComponent implements ActionListener
             this.controlsButton.draw(g);
             this.upgradeButton.draw(g);
         }
+        if (this.controls)
+        {
+            this.controlsMenu.draw(g);
+            
+            this.buttons.add(this.backButton);
+            this.backButton.draw(g);
+        }
+        if (this.upgrade)
+        {
+            this.upgradeMenu.draw(g);
+            this.balanceGraphics.draw(g);
+            
+            this.buttons.add(this.backButton);
+            this.backButton.draw(g);
+        }
         timer.start();
     }
     
@@ -146,7 +169,7 @@ public class GameComponent extends JComponent implements ActionListener
     {
         if (!this.pause)
         {
-            if (this.left && !this.gameOver && !this.mainMenu)
+            if (this.left && this.play)
             {
                 if (ship.getX() <= 0)
                 {
@@ -154,7 +177,7 @@ public class GameComponent extends JComponent implements ActionListener
                 }
                 ship.moveLeft();
             }
-            if (this.right && !this.gameOver && !this.mainMenu)
+            if (this.right && this.play)
             {
                 if (ship.getX() + 34 >= this.width)
                 {
@@ -162,9 +185,9 @@ public class GameComponent extends JComponent implements ActionListener
                 }
                 ship.moveRight();
             }            
-            if (this.shooting && missleDelay >= 30 && !this.gameOver && !this.mainMenu)
+            if (this.shooting && missleDelay >= 30 && this.play)
             {
-                missles.add(new Missle(ship.getX()+4, ship.getY()-12));
+                missles.add(new Missle(ship.getX()+4, ship.getY()-12, this.ship.getShip()));
                 missleDelay = 0;
             }
             
@@ -186,7 +209,7 @@ public class GameComponent extends JComponent implements ActionListener
                 }
                 enemy.move();
                 
-                if (!this.mainMenu)
+                if (this.play)
                 {
                     if (enemy.getX() >= this.ship.getX() && enemy.getX() <= this.ship.getX() + 34 ||
                         enemy.getX() + 58 >= this.ship.getX() && enemy.getX() + 58 <= this.ship.getX() + 34)
@@ -195,6 +218,7 @@ public class GameComponent extends JComponent implements ActionListener
                             enemy.getY() + 29 >= this.ship.getY() && enemy.getY() + 29 <= this.ship.getY() + 34)
                         {
                             this.gameOver = true;
+                            this.play = false;
                         }
                     }
                 }
@@ -272,6 +296,36 @@ public class GameComponent extends JComponent implements ActionListener
         return this.pause;
     }
     
+    public void setControls(boolean set)
+    {
+        this.controls = set;
+    }
+    
+    public boolean getControls()
+    {
+        return this.controls;
+    }
+    
+    public void setUpgrade(boolean set)
+    {
+        this.upgrade = set;
+    }
+    
+    public boolean getUpgrade()
+    {
+        return this.upgrade;
+    }
+    
+    public void setPlay(boolean set)
+    {
+        this.play = set;
+    }
+    
+    public boolean getPlay()
+    {
+        return this.play;
+    }
+    
     public ArrayList<Button> getButtons()
     {
         return this.buttons;
@@ -307,9 +361,9 @@ public class GameComponent extends JComponent implements ActionListener
         this.shooting = false;
     }
     
-    public void play(boolean menu)
+    public void setMenu(boolean menu)
     {
-        this.mainMenu = !menu;
+        this.mainMenu = menu;
     }
     
     public boolean getMenu()

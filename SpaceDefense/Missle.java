@@ -13,17 +13,19 @@ public class Missle
     private int x; //top left x coor
     private int y; //top left y coor
     private int dy; //y vector
+    private int value;
     
-    public Missle(int x, int y)
+    public Missle(int x, int y, String ship)
     {
         this.x = x;
         this.y = y;
-        this.dy = -2;
+        this.value = new Character(ship.charAt(ship.length()-1)).getNumericValue(ship.charAt(ship.length()-1));
+        this.dy = -2 * this.value;
     }
     
     public void draw(Graphics g)
     {
-        ImageIcon icon = new ImageIcon("Images\\missile_double.png");
+        ImageIcon icon = new ImageIcon("Images\\missile_double"+this.value+".png");
         Image image = icon.getImage();
         
         g.drawImage(image, x, y, null);

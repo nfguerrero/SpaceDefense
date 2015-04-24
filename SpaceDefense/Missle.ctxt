@@ -1,6 +1,6 @@
 #BlueJ class context
-comment0.params=x\ y
-comment0.target=Missle(int,\ int)
+comment0.params=x\ y\ ship
+comment0.target=Missle(int,\ int,\ java.lang.String)
 comment1.params=g
 comment1.target=void\ draw(java.awt.Graphics)
 comment2.params=

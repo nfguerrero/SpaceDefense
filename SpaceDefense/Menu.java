@@ -8,20 +8,22 @@ import java.awt.Image;
  * @author (your name) 
  * @version (a version number or a date)
  */
-public class PauseMenu
+public class Menu
 {
     private int x; //top left x coor
     private int y; //top left y coor
+    private String menu;
     
-    public PauseMenu(int x, int y)
+    public Menu(int x, int y, String menu)
     {
         this.x = x;
         this.y = y;
+        this.menu = menu;
     }
     
     public void draw(Graphics g)
     {
-        ImageIcon icon = new ImageIcon("Images\\menu_bg.png");
+        ImageIcon icon = new ImageIcon("Images\\"+this.menu+".png");
         Image image = icon.getImage();
 
         g.drawImage(image, x, y, null);        

@@ -1,6 +1,6 @@
 #BlueJ class context
-comment0.params=x\ y
-comment0.target=Ship(int,\ int)
+comment0.params=x\ y\ ship
+comment0.target=Ship(int,\ int,\ java.lang.String)
 comment1.params=g
 comment1.target=void\ draw(java.awt.Graphics)
 comment2.params=
@@ -15,4 +15,8 @@ comment6.params=
 comment6.target=int\ getY()
 comment7.params=y
 comment7.target=void\ setY(int)
-numComments=8
+comment8.params=ship
+comment8.target=void\ setShip(java.lang.String)
+comment9.params=
+comment9.target=java.lang.String\ getShip()
+numComments=10

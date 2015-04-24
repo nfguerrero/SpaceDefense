@@ -48,7 +48,7 @@ public class GameFrame extends JFrame
          
          if (key.equals("ESCAPE"))
          {
-            if (!scene.getGameOver() && !scene.getMenu())
+            if (scene.getPlay())
             {
                 if (!scene.getPause())
                 {
@@ -130,22 +130,43 @@ public class GameFrame extends JFrame
                    if (buttonInRange.getButton().equals("play_game"))
                    {
                        scene.reset();
-                       scene.play(true);
-                       buttonInRange.setShadow(false);
-                    }
+                       scene.setMenu(false);     
+                       scene.setPlay(true);
+                   }
+                   else if (buttonInRange.getButton().equals("controls"))
+                   {
+                       scene.setMenu(false);
+                       scene.setControls(true);
+                   }
+                   else if (buttonInRange.getButton().equals("upgrade"))
+                   {
+                       scene.setMenu(false);
+                       scene.setUpgrade(true);
+                   }
                }
                else if (scene.getPause())
                {
-                   scene.play(false);
+                   scene.setMenu(true);
+                   scene.setPlay(false);
                    scene.unpause();
-                   buttonInRange.setShadow(false);
                }
                else if (scene.getGameOver())
                {
-                   scene.play(false);
-                   scene.resetGameOver();
-                   buttonInRange.setShadow(false);                   
+                   scene.setMenu(true);
+                   scene.setPlay(false);
+                   scene.resetGameOver();                  
                }
+               else if (scene.getControls())
+               {
+                   scene.setMenu(true);
+                   scene.setControls(false);
+               }
+               else if (scene.getUpgrade())
+               {
+                   scene.setMenu(true);
+                   scene.setUpgrade(false);
+               }
+               buttonInRange.setShadow(false);
            }
        }
    }
