@@ -3,10 +3,10 @@ import javax.swing.ImageIcon;
 import java.awt.Image;
 
 /**
- * Write a description of class Ship here.
+ * Ship the player moves
  * 
- * @author (your name) 
- * @version (a version number or a date)
+ * @author nfguerrero
+ * @version 6.0
  */
 public class Ship
 {
@@ -14,14 +14,24 @@ public class Ship
     private int y; //top left y coor
     private int move;
     private String ship;
+    private int missleDelay;
     
     public Ship(int x, int y, String ship)
     {
         this.x = x;
         this.y = y;
         this.ship = ship;
-        int value = new Character(ship.charAt(ship.length()-1)).getNumericValue(ship.charAt(ship.length()-1));
+        int value = 0;
+        if (ship.equals("ship15"))
+        {
+            value = 15;
+        }
+        else
+        {
+            value = new Character(ship.charAt(ship.length()-1)).getNumericValue(ship.charAt(ship.length()-1));
+        }
         this.move = 3 * value;
+        this.missleDelay = 30/value;
     }
     
     public void draw(Graphics g)
@@ -65,10 +75,31 @@ public class Ship
     public void setShip(String ship)
     {
         this.ship = ship;
+        int value = 0;
+        if (ship.equals("ship15"))
+        {
+            value = 15;
+        }
+        else
+        {
+            value = new Character(ship.charAt(ship.length()-1)).getNumericValue(ship.charAt(ship.length()-1));
+        }
+        this.move = 3 * value;
+        this.missleDelay = 30/value;
     }
     
     public String getShip()
     {
         return this.ship;
+    }
+    
+    public void setMissleDelay(int delay)
+    {
+        this.missleDelay = delay;
+    }
+    
+    public int getMissleDelay()
+    {
+        return this.missleDelay;
     }
 }

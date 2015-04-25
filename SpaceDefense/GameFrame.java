@@ -17,7 +17,7 @@ import java.util.ArrayList;
  * Frame for the game that holds the Listeners and tells the component what to do
  * 
  * @author nfguerrero
- * @version Ver: 1.0
+ * @version Ver: 6.0
  */
 public class GameFrame extends JFrame
 {
@@ -26,8 +26,17 @@ public class GameFrame extends JFrame
 
    private GameComponent scene;
    
+   /**
+    * KeyListener to listen for keys detected and change the state of the game accordingly
+    */
    class KeyStrokeListener implements KeyListener
    {
+       /**
+        * Method called when a key is pressed
+        * 
+        * @param KeyEvent event     the event that is being listened and can get information from of what keys are
+        *                           pressed
+        */
       public void keyPressed(KeyEvent event) 
       {
          String key = KeyStroke.getKeyStrokeForEvent(event).toString().replace("pressed ", ""); 
@@ -62,6 +71,12 @@ public class GameFrame extends JFrame
          }
       }
       public void keyTyped(KeyEvent event) {}
+      /**
+       *Method called when a key is released
+       * 
+       *@param KeyEvent event     the event that is being listened and can get information from of what keys are
+       *                           released
+       */
       public void keyReleased(KeyEvent event)
       {
           String key = KeyStroke.getKeyStrokeForEvent(event).toString().replace("released ", "");
@@ -84,13 +99,22 @@ public class GameFrame extends JFrame
    
    private boolean inRange;
    private Button buttonInRange;
+   private ArrayList<Button> buttons;
+   /**
+    * MouseMotionListener that detects when the mouse is moved on the component
+    */
    class MouseMovementListener extends MouseMotionAdapter
    {       
+       /**
+        * Detects when the mouse is moved
+        * 
+        * @param MouseEvent event       event that is listened on and can get information on the movement of the mouse
+        */
        public void mouseMoved(MouseEvent event)
        {
            int x = event.getX();
            int y = event.getY();
-           ArrayList<Button> buttons = scene.getButtons();
+           buttons = scene.getButtons();
            
            for (int i = 0; i < buttons.size(); i++)
            {
@@ -98,7 +122,7 @@ public class GameFrame extends JFrame
                int buttonX = button.getX();
                int buttonY = button.getY();               
                
-               if (x >= buttonX && x <= buttonX+150 && y >= buttonY && y <= buttonY+50)
+               if (x >= buttonX && x <= buttonX+button.getWidth() && y >= buttonY && y <= buttonY+button.getHeight())
                {
                    if (!button.getShadow())
                    {
@@ -110,7 +134,7 @@ public class GameFrame extends JFrame
                }
                else
                {
-                   if (button.getShadow())
+                   if (button.getShadow() && !button.isSelected())
                    {
                        button.setShadow(false);
                    }
@@ -119,8 +143,16 @@ public class GameFrame extends JFrame
            }
        }
    }
+   /**
+    * MouseListener that detects the clicking of the mouse
+    */
    class MouseClickListener extends MouseAdapter
    {
+       /**
+        * Detects the mouse being clicked
+        * 
+        * @param MouseEvent event       event being listened to attain info on the mouse
+        */
        public void mouseClicked(MouseEvent event)
        {
            if (inRange)
@@ -143,6 +175,11 @@ public class GameFrame extends JFrame
                        scene.setMenu(false);
                        scene.setUpgrade(true);
                    }
+                   else if (buttonInRange.getButton().equals("secret"))
+                   {
+                       scene.setMenu(false);
+                       scene.setSecret(true);
+                   }
                }
                else if (scene.getPause())
                {
@@ -162,17 +199,78 @@ public class GameFrame extends JFrame
                    scene.setControls(false);
                }
                else if (scene.getUpgrade())
+               {                   
+                   if (buttonInRange.getButton().equals("back"))
+                   {
+                       scene.setMenu(true);
+                       scene.setUpgrade(false);
+                   }
+                   else if (buttonInRange.getButton().equals("ship1"))
+                   {
+                       scene.setShip("ship1");
+                       buttonInRange.setSelected(true);
+                   }
+                   else if (buttonInRange.getButton().equals("ship2") && (scene.getBalance() >= 100 || !buttonInRange.getLocked()))
+                   {
+                       scene.setShip("ship2");
+                       if (buttonInRange.getLocked())
+                       {
+                           scene.setBalance(scene.getBalance()-100);
+                       }
+                       buttonInRange.setLocked(false);
+                       buttonInRange.setSelected(true);                       
+                   }
+                   else if (buttonInRange.getButton().equals("ship3") && (scene.getBalance() >= 300 || !buttonInRange.getLocked()))
+                   {
+                       scene.setShip("ship3");
+                       if (buttonInRange.getLocked())
+                       {
+                           scene.setBalance(scene.getBalance()-300);
+                       }
+                       buttonInRange.setLocked(false);
+                       buttonInRange.setSelected(true);                       
+                   }
+                   else if (buttonInRange.getButton().equals("ship15"))
+                   {
+                       scene.setShip("ship15");
+                       buttonInRange.setSelected(true);
+                   }
+                   for (int i = 0; i < buttons.size(); i++)
+                   {
+                       if (!buttons.get(i).getButton().equals(scene.getShip()))
+                       {
+                           buttons.get(i).setSelected(false);
+                        }
+                   }
+               }
+               else if (scene.getSecret())
                {
-                   scene.setMenu(true);
-                   scene.setUpgrade(false);
+                   if (buttonInRange.getButton().equals("yes"))
+                   {
+                       scene.setGodMode(true);
+                       scene.setSecret(false);
+                       scene.setCorrect(true);                       
+                   }
+                   else if (buttonInRange.getButton().equals("no"))
+                   {
+                       scene.setSecret(false);
+                       scene.setWrong(true);
+                   }
                }
                buttonInRange.setShadow(false);
            }
        }
-   }
-   
+   }   
+   /**
+    * WindowListener that detects the window
+    */
    class FrameWindowListener extends WindowAdapter
    {
+       /**
+        * Detects the window being opened
+        * 
+        * @param WindowEvent event      event that detects the the window
+        */
        public void windowOpened(WindowEvent event)
        {
            scene.requestFocusInWindow();
@@ -180,6 +278,9 @@ public class GameFrame extends JFrame
        }
    }
    
+   /**
+    * Creates a component and adds the listeners to it
+    */
    public GameFrame()
    {
       scene = new GameComponent();

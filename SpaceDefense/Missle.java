@@ -19,7 +19,14 @@ public class Missle
     {
         this.x = x;
         this.y = y;
-        this.value = new Character(ship.charAt(ship.length()-1)).getNumericValue(ship.charAt(ship.length()-1));
+        if (ship.equals("ship15"))
+        {
+            this.value = 15;
+        }
+        else
+        {
+            this.value = new Character(ship.charAt(ship.length()-1)).getNumericValue(ship.charAt(ship.length()-1));
+        }
         this.dy = -2 * this.value;
     }
     
